@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  web:
+    container_name: app_front
+    build:
+      context: ./docker
+      dockerfile: Dockerfile
+    environment:
+      PORT: '3000'
+      HOST: '0.0.0.0'
+      # axiosで利用するためAPIのOriginを環境変数として持たせておく
+      BASE_URL: 'http://nginx'
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
+    stdin_open: true
+    tty: true
+    networks:
+      - backend
+
+networks:
+  backend:
+    external: true
