@@ -3,11 +3,20 @@
     <v-col lg="6" md="6" sm="6" class="pt-16">
       <v-card>
         <v-card-title>
-          <h1 class="display-1">ログイン</h1>
+          <h1 class="display-1">新規登録</h1>
         </v-card-title>
         <v-card-text>
           <v-form>
-            <v-text-field 
+            <v-text-field
+              label="名前"
+              type="string"
+              prepend-icon="mdi-account"
+              counter="40"
+              v-model="form.name"
+              :rules="form.nameRules"
+              required
+            />
+            <v-text-field
               label="メールアドレス"
               type="email"
               prepend-icon="mdi-email"
@@ -27,7 +36,7 @@
               required
             />
           <v-card-actions>
-            <v-btn @click="login()" color="teal lighten-3">ログイン</v-btn>
+            <v-btn @click="register()" color="teal lighten-3">新規登録</v-btn>
           </v-card-actions>
           </v-form>
         </v-card-text>
@@ -47,6 +56,11 @@
       return {
         form: {
           showPassword: false,
+          name: '',
+          nameRules: [
+            v => !!v || '名前を入力してください',
+            v => (!!v && 40 >= v.length) || `40文字以内で入力してください`
+          ],
           email: '',
           emailRules: [
             v => !!v || 'メールアドレスを入力してください',
@@ -60,15 +74,12 @@
         }
       };
     },
-    mounted() {
-      this.$axios.get(`${this.apiURL}/sanctum/csrf-cookie`);
-    },
     methods: {
-      async login() {
+      async register() {
         try {
-          const res = await this.$axios.post(`${this.apiURL}/api/login`, this.form);
+          const res = await this.$axios.post(`${this.apiURL}/api/register`, this.form);
           console.log(res);
-          console.log('ログインできた');
+          console.log('新規登録できた');
           this.$router.push('/');
         } catch(error) {
           console.log(error);
